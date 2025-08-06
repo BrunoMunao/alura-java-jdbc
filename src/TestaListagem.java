@@ -1,6 +1,6 @@
 import java.sql.Connection;
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
-import java.sql.Statement;
 
 public class TestaListagem {
 
@@ -8,8 +8,8 @@ public class TestaListagem {
         ConnectionFactory factory = new ConnectionFactory();
         Connection connection = factory.getConnection();
 
-        Statement stmt = connection.createStatement();
-        stmt.execute("SELECT * FROM produto");
+        PreparedStatement stmt = connection.prepareStatement("SELECT * FROM produto");
+        stmt.execute();
 
         ResultSet rs = stmt.getResultSet();
 
