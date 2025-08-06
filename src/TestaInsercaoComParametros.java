@@ -9,22 +9,35 @@ public class TestaInsercaoComParametros {
         System.out.println("Inserindo um produto!");
 
         ConnectionFactory factory = new ConnectionFactory();
-        Connection connection = factory.getConnection();
+        try (Connection connection = factory.getConnection()) {
+            connection.setAutoCommit(false); 
+            
+            try (PreparedStatement stmt = connection.prepareStatement("INSERT INTO produto (nome, descricao) VALUES (?, ?)", Statement.RETURN_GENERATED_KEYS)) {
+                adicionarVariavel("Mouse", "Mouse sem fio", stmt);
+                adicionarVariavel("Teclado", "Teclado Mecânico", stmt);                
+            } catch (Exception e) {
+                e.printStackTrace();
+                connection.rollback(); // Rollback em caso de erro
+            } finally {
+                connection.commit(); // Commit após todas as inserções
+            }        
+        }
+    }
 
-        PreparedStatement stmt = connection.prepareStatement("INSERT INTO produto (nome, descricao) VALUES (?, ?)", Statement.RETURN_GENERATED_KEYS);        
+    private static void adicionarVariavel(String nome, String descricao, PreparedStatement stmt) {        
+        try {
+            stmt.setString(1, nome);
+            stmt.setString(2, descricao);
+            stmt.execute();
 
-        stmt.setString(1, "Teclado");
-        stmt.setString(2, "Teclado mecânico");
-
-        stmt.execute();
-
-        ResultSet rs = stmt.getGeneratedKeys();
-
-        while (rs.next()) {
-            System.out.println("ID do produto inserido: " + rs.getInt(1));
-        }        
-
-        connection.close();
+            try (ResultSet rs = stmt.getGeneratedKeys()) {
+                while (rs.next()) {
+                    System.out.println("ID do produto inserido: " + rs.getInt(1));
+                }        
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 }
 
