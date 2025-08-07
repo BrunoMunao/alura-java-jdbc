@@ -49,4 +49,25 @@ public class ProdutoDAO {
             e.printStackTrace();
         }
     }
+
+    public void listarProdutosComCategorias() {
+        String sql = "SELECT p.id, p.nome, p.descricao, c.descricao AS categoria_nome " +
+                     "FROM produto p " +
+                     "INNER JOIN categoria c ON p.categoria_id = c.id";
+
+        try (PreparedStatement stmt = connection.prepareStatement(sql)) {
+            stmt.execute();
+            try (ResultSet rs = stmt.getResultSet()) {
+                while (rs.next()) {
+                    System.out.println("ID: " + rs.getInt("id"));
+                    System.out.println("Nome: " + rs.getString("nome"));
+                    System.out.println("Descrição: " + rs.getString("descricao"));
+                    System.out.println("Categoria: " + rs.getString("categoria_nome"));
+                    System.out.println("---------------------------");
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
 }
