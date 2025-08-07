@@ -1,6 +1,9 @@
+package testes;
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.Statement;
+
+import factory.ConnectionFactory;
 
 public class TestaInsercao {
 

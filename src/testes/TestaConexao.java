@@ -1,4 +1,6 @@
+package testes;
 import java.sql.Connection;
+import factory.ConnectionFactory;
 
 public class TestaConexao {
     public static void main(String[] args) throws Exception {

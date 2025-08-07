@@ -1,5 +1,7 @@
+package testes;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
+import factory.ConnectionFactory;
 
 public class TestaExclusao {
     public static void main(String[] args) throws Exception {

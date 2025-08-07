@@ -1,11 +1,10 @@
+package factory;
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.Properties;
-
 import javax.sql.DataSource;
 
 import com.mchange.v2.c3p0.ComboPooledDataSource;
@@ -13,10 +12,12 @@ import com.mchange.v2.c3p0.ComboPooledDataSource;
 public class ConnectionFactory {
     private DataSource dataSource;
 
-    public ConnectionFactory() throws FileNotFoundException, IOException {
+    public ConnectionFactory() {
         Properties props = new Properties();
         try (InputStream input = new FileInputStream("config.properties")) {
             props.load(input);
+        } catch (IOException e) {
+            throw new RuntimeException("Erro ao carregar o arquivo de propriedades: " + e.getMessage(), e);
         }
 
         String url = props.getProperty("db.url");
@@ -32,7 +33,11 @@ public class ConnectionFactory {
         this.dataSource = comboPooledDataSource;
     }
 
-    public Connection getConnection() throws SQLException {
-        return dataSource.getConnection();
+    public Connection getConnection() {
+        try {
+            return dataSource.getConnection();
+        } catch (SQLException e) {
+            throw new RuntimeException("Erro ao obter conexão: " + e.getMessage(), e);
+        }        
     }
 }
